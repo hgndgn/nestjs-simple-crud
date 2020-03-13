@@ -18,8 +18,8 @@ const combinedFormat = winston.format.combine(
   winston.format.timestamp(),
   utilities.format.nestLike(),
   winstonConsoleFormat,
-  winston.format.json(),
-  winston.format.prettyPrint(),
+  // winston.format.json(),
+  // winston.format.prettyPrint(),
   // winston.format.splat(),
   // winston.format.simple(),
 );
