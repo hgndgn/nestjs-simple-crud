@@ -26,7 +26,7 @@ export class AllExceptionsFilter implements ExceptionFilter {
       path: req.url,
       error: error.name || error.response.name || error.response.error,
       message: error.response || error.message || error.response.message,
-      errors: error.response.errors || undefined,
+      errors: (error.response && error.response.errors) || undefined,
     };
 
     res.status(status).json(responseObject);

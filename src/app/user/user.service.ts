@@ -21,14 +21,19 @@ export class UserService {
   }
 
   async create(user: UserDto): Promise<IUserDoc> {
-    const usernameExists = await this.userModel.findOne({
-      username: user.username,
-    });
+    const usernameExists = await this.userModel
+      .findOne({
+        username: user.username,
+      })
+      .exec();
+
     if (usernameExists) {
       throw new BadRequestException(Errors.AlreadyExistsError('Username'));
     }
 
-    const emailExists = await this.userModel.findOne({ email: user.email });
+    const emailExists = await this.userModel
+      .findOne({ email: user.email })
+      .exec();
     if (emailExists) {
       throw new BadRequestException(Errors.AlreadyExistsError('Email'));
     }
@@ -73,10 +78,9 @@ export class UserService {
   }
 
   async updateOne(username: string, payload: UserDto): Promise<IUserDoc> {
-    const updated = await this.userModel.findOneAndUpdate(
-      { username },
-      payload,
-    );
+    const updated = await this.userModel
+      .findOneAndUpdate({ username }, payload)
+      .exec();
 
     if (!updated) {
       this.logger.error(`Username '${username}' not exists`);
@@ -84,9 +88,8 @@ export class UserService {
     }
 
     try {
-      await updated.save();
       this.logger.info(`Update user '${updated._id}'`);
-      return updated;
+      return await this.userModel.findOne({ username }).exec();
     } catch (error) {
       this.logger.error(error);
       throw new BadRequestException(Errors.ValidationError());
@@ -102,6 +105,6 @@ export class UserService {
   }
 
   async findOne(username: string): Promise<IUserDoc | null> {
-    return await this.userModel.findOne({ username });
+    return await this.userModel.findOne({ username }).exec();
   }
 }

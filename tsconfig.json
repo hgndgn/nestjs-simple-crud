@@ -11,16 +11,16 @@
     "baseUrl": "./",
     "incremental": true,
     "paths": {
-      "@app/*": ["src/app/*"],
       "@auth/*": ["src/app/auth/*"],
       "@config/*": ["config/*"],
+      "@database/*": ["src/app/database/*"],
       "@logger/*": ["src/app/logger/*"],
       "@shared/*": ["src/app/shared/*"],
       "@user/*": ["src/app/user/*"],
     }
   },
   "include": [
-    "src/**/*"
+    "src/**/*",
   ],
   "exclude": ["node_modules", "dist"]
 }

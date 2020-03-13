@@ -2,7 +2,7 @@ import * as request from 'supertest';
 
 import { Test, TestingModule } from '@nestjs/testing';
 
-import { AppModule } from '../src/app/app.module';
+import { AppModule } from '../app.module';
 import { INestApplication } from '@nestjs/common';
 
 describe('AppController (e2e)', () => {
@@ -17,10 +17,16 @@ describe('AppController (e2e)', () => {
     await app.init();
   });
 
-  it('/ (GET)', () => {
+  it('/auth/login (POST)', () => {
     return request(app.getHttpServer())
-      .get('/')
-      .expect(200)
-      .expect('Hello World!');
+      .post('/auth/login')
+      .send({
+        username: 'OOO',
+        password: '12345678',
+      })
+      .expect(res => {
+        expect(res.body.accessToken).toBeTruthy();
+      })
+      .expect(200);
   });
 });

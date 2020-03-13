@@ -20,6 +20,7 @@
     "test:e2e": "jest --config ./test/jest-e2e.json"
   },
   "dependencies": {
+    "@golevelup/nestjs-testing": "^0.1.2",
     "@nestjs/common": "^6.10.14",
     "@nestjs/core": "^6.10.14",
     "@nestjs/jwt": "^6.1.1",
@@ -77,8 +78,7 @@
       "ts"
     ],
     "globals": {
-      "ts-jest": {
-      }
+      "ts-jest": {}
     },
     "rootDir": "src/app",
     "testRegex": ".spec.ts$",
@@ -90,6 +90,7 @@
     "moduleNameMapper": {
       "^@auth/(.*)$": "<rootDir>/auth/$1",
       "^@config/(.*)$": "<rootDir>/../../config/$1",
+      "^@database/(.*)$": "<rootDir>/database/$1",
       "^@logger/(.*)$": "<rootDir>/logger/$1",
       "^@shared/(.*)$": "<rootDir>/shared/$1",
       "^@user/(.*)$": "<rootDir>/user/$1"

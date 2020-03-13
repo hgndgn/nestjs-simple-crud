@@ -1,60 +1,58 @@
+import { DocumentQuery, Model } from 'mongoose';
 import { Test, TestingModule } from '@nestjs/testing';
+import { mockUserDtoObject, userDocArray } from '@user/user.mock';
 
-import { AppLogger } from '@logger/logger';
 import { AuthModule } from './auth.module';
 import { AuthService } from './auth.service';
-import { UserService } from '@user/user.service';
+import { DatabaseModule } from '@database/database.module';
+import { IUserDoc } from '@user/document/user.doc';
+import { LoggerModule } from '@logger/logger.module';
+import { UserModule } from '@user/user.module';
+import { createMock } from '@golevelup/nestjs-testing';
 import { getModelToken } from '@nestjs/mongoose';
-
-const mockUser = (
-  firstname: string = 'TheFirstName',
-  lastname: string = 'TheLastName',
-  username: string = 'TheUserName',
-  email: string = 'TheEmail',
-  password: string = 'ThePassword',
-  roles: string[] = ['User'],
-) => ({
-  firstname,
-  lastname,
-  username,
-  email,
-  password,
-  roles,
-});
+import { mockUserModel } from '@user/user.mock';
 
 describe('AuthService', () => {
   let service: AuthService;
+  let model: Model<IUserDoc>;
 
   beforeEach(async () => {
     const module: TestingModule = await Test.createTestingModule({
-      imports: [AuthModule],
+      imports: [AuthModule, UserModule, LoggerModule, DatabaseModule],
       providers: [
         AuthService,
-        UserService,
-        AppLogger,
-        // { provide: getConnectionToken(), useValue: {} },
         {
           provide: getModelToken('User'),
-          useValue: {
-            new: jest.fn().mockResolvedValue(mockUser()),
-            constructor: jest.fn().mockResolvedValue(mockUser()),
-            find: jest.fn(),
-            findOne: jest.fn(),
-            findOneAndUpdate: jest.fn(),
-            create: jest.fn(),
-            deleteOne: jest.fn(),
-            exec: jest.fn(),
-          },
+          useValue: mockUserModel,
         },
       ],
     }).compile();
 
     service = module.get<AuthService>(AuthService);
+    model = module.get<Model<IUserDoc>>(getModelToken('User'));
+  });
+
+  afterEach(() => {
+    jest.clearAllMocks();
   });
 
   it('should be defined', () => {
     expect(service).toBeDefined();
   });
 
-  // TODO: tests
+  it('should validate user', async () => {
+    jest.spyOn(model, 'findOne').mockReturnValueOnce(
+      createMock<DocumentQuery<IUserDoc, IUserDoc>>({
+        exec: jest.fn().mockReturnValueOnce(userDocArray[0]),
+      }),
+    );
+
+    const mock = mockUserDtoObject();
+    const user = await service.validateUser(mock.username, mock.password);
+
+    delete mock.password;
+    delete user.password;
+
+    expect(user).toEqual(mock);
+  });
 });

@@ -1,7 +1,11 @@
 import * as BCRYPT from 'bcrypt';
 import * as validator from 'validator';
 
-import { BadRequestException, Injectable } from '@nestjs/common';
+import {
+  BadRequestException,
+  Injectable,
+  UnauthorizedException,
+} from '@nestjs/common';
 
 import { AppLogger } from '../logger/logger';
 import { Errors } from '@shared/errors';
@@ -23,12 +27,18 @@ export class AuthService {
     this.logger.setContext(AuthService.name);
   }
 
-  async validateUser(username: string, password: string): Promise<any> {
+  async validateUser(
+    username: string,
+    password: string,
+  ): Promise<Partial<IUserDoc>> {
     const user = await this.usersService.findOne(username);
-    const validPassword = BCRYPT.compareSync(password, user.password);
+    if (!user) {
+      throw new UnauthorizedException('Wrong username');
+    }
 
-    if (!user || !validPassword) {
-      return null;
+    const validPassword = BCRYPT.compareSync(password, user.password);
+    if (!validPassword) {
+      throw new UnauthorizedException('Wrong password');
     }
 
     const { password: pwd, ...result } = user;
