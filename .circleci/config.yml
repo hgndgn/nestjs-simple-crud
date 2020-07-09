@@ -8,7 +8,7 @@ jobs:
       - run:
           name: Install dependencies for test
           command: |
-            npm install jest
+            npm install jest ts-jest @types/jest
       - run:
           name: Run tests
           command: |
