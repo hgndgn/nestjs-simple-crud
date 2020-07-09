@@ -6,6 +6,10 @@ jobs:
     steps:
       - checkout
       - run:
-          name: Run test
+          name: Install dependencies for test
+          command: |
+            npm install jest
+      - run:
+          name: Run tests
           command: |
             npm run test
