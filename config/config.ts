@@ -12,7 +12,7 @@ export const config = {
     },
   },
   mongo: {
-    url: 'mongodb://localhost',
+    url: 'mongodb://mongo:27017',
     dbName: 'nest',
   },
   jwt: {

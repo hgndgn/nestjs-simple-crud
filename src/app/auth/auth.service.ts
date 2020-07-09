@@ -66,7 +66,7 @@ export class AuthService {
     if (!validPassword) {
       throw new BadRequestException(
         Errors.ValidationError(
-          'Password must contain min. 8 and max. 128 ASCII table characters',
+          'Password must contain min. 8 and max. 128 ASCII characters',
         ),
       );
     }
